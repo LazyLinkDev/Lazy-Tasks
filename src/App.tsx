@@ -1,35 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import {
+  useQuery,
+  useMutation,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { AppType } from "../functions/api/[[route]]";
+import { hc, InferResponseType, InferRequestType } from "hono/client";
 
-function App() {
-  const [count, setCount] = useState(0)
+const queryClient = new QueryClient();
+const client = hc<AppType>("/");
 
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <QueryClientProvider client={queryClient}>
+      <Todos />
+    </QueryClientProvider>
+  );
 }
 
-export default App
+const Todos = () => {
+  const query = useQuery({
+    queryKey: ["todos"],
+    queryFn: async () => {
+      const res = await client.api.todo.$get();
+      return await res.json();
+    },
+  });
+
+  const $post = client.api.todo.$post;
+
+  const mutation = useMutation<
+    InferResponseType<typeof $post>,
+    Error,
+    InferRequestType<typeof $post>["form"]
+  >(
+    async (todo) => {
+      const res = await $post({
+        form: todo,
+      });
+      return await res.json();
+    },
+    {
+      onSuccess: async () => {
+        queryClient.invalidateQueries({ queryKey: ["todos"] });
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    }
+  );
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          mutation.mutate({
+            id: Date.now().toString(),
+            title: "Write code",
+          });
+        }}
+      >
+        Add Todo
+      </button>
+
+      <ul>
+        {query.data?.todos.map((todo) => (
+          <li key={todo.id}>{todo.message}</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
