@@ -4,12 +4,15 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { todos as todosTable } from "../../db/schema";
 import { drizzle } from "drizzle-orm/d1";
+import { logger } from "hono/logger";
 
 type Bindings = {
   SHARED_STORAGE_DB: D1Database;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
+
+app.use("*", logger());
 
 const route = app
   .basePath("/api")
