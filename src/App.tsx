@@ -35,9 +35,7 @@ const Todos = () => {
     InferRequestType<typeof $post>["form"]
   >(
     async (todo) => {
-      const res = await $post({
-        form: todo,
-      });
+      const res = await $post({ form: todo });
       return await res.json();
     },
     {
@@ -54,10 +52,7 @@ const Todos = () => {
     <div>
       <button
         onClick={() => {
-          mutation.mutate({
-            id: Date.now().toString(),
-            title: "Write code",
-          });
+          mutation.mutate({ message: "Write code" });
         }}
       >
         Add Todo
