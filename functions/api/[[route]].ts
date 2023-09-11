@@ -25,17 +25,13 @@ const route = app
     await db.insert(todosTable).values({
       message: todo.title,
     });
-    return c.jsonT({
-      message: "created!",
-    });
+    return c.jsonT({ message: "created!" });
   })
   .get(async (c) => {
     const db = drizzle(c.env.SHARED_STORAGE_DB);
     const todos = await db.select().from(todosTable).all();
 
-    return c.jsonT({
-      todos,
-    });
+    return c.jsonT({ todos });
   });
 
 export type AppType = typeof route;
