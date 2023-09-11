@@ -15,3 +15,5 @@ This is a website made just to test the capabilities of Clouflare services. At t
 1. Delete task
 1. Auth (no external services)
 1. Tasks owned by user
+1. Lists
+1. Shared task list
