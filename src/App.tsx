@@ -1,18 +1,16 @@
 import {
   QueryClient,
   QueryClientProvider,
-  useMutation,
   useQuery,
 } from "@tanstack/react-query";
-import { InferRequestType, InferResponseType, hc } from "hono/client";
-import { BadgePlus } from "lucide-react";
+import { hc } from "hono/client";
 import { AppType } from "../functions/api/[[route]]";
 import { ModeToggle } from "./components/mode-toggle";
 import { ThemeProvider } from "./components/theme-provider";
-import { Button } from "./components/ui/button";
+import CreateToDo from "./components/create-todo";
 
 const queryClient = new QueryClient();
-const client = hc<AppType>("/");
+export const client = hc<AppType>("/");
 
 export default function App() {
   return (
@@ -31,27 +29,6 @@ const Todos = () => {
     },
   });
 
-  const $post = client.api.todo.$post;
-
-  const mutation = useMutation<
-    InferResponseType<typeof $post>,
-    Error,
-    InferRequestType<typeof $post>["form"]
-  >(
-    async (todo) => {
-      const res = await $post({ form: todo });
-      return await res.json();
-    },
-    {
-      onSuccess: async () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    }
-  );
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <main className="px-8 h-screen flex flex-col max-w-lg mx-auto pt-2 lg:pt-10">
@@ -62,14 +39,7 @@ const Todos = () => {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <Button
-            className="w-4/5 mx-auto mb-4"
-            onClick={() => mutation.mutate({ message: "Write code" })}
-          >
-            <BadgePlus className="mr-2 h-4 w-4" />
-            Add Todo
-          </Button>
-
+          <CreateToDo />
           <ul>
             {query.data?.todos.map((todo) => (
               <li key={todo.id}>{todo.message}</li>
