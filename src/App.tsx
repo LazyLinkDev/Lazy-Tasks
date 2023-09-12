@@ -5,10 +5,10 @@ import {
 } from "@tanstack/react-query";
 import { hc } from "hono/client";
 import { AppType } from "../functions/api/[[route]]";
-import { ModeToggle } from "./components/mode-toggle";
-import { ThemeProvider } from "./components/theme-provider";
 import CreateEditToDo from "./components/create-edit-todo";
+import { ModeToggle } from "./components/mode-toggle";
 import Task from "./components/task";
+import { ThemeProvider } from "./components/theme-provider";
 
 const queryClient = new QueryClient();
 export const client = hc<AppType>("/");
@@ -25,7 +25,7 @@ const Todos = () => {
   const query = useQuery({
     queryKey: ["todos"],
     queryFn: async () => {
-      const res = await client.api.todo.$get();
+      const res = await client.api.todo.index.$get();
       return await res.json();
     },
   });

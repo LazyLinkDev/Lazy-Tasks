@@ -6,9 +6,15 @@ import { z } from "zod";
 import { todos as todosTable } from "../../db/schema";
 import { Bindings } from "./[[route]]";
 
-const route = new Hono<{ Bindings: Bindings }>();
+const todo = new Hono<{ Bindings: Bindings }>();
 
-route
+export const todoRoute = todo
+  .get("/", async (c) => {
+    const db = drizzle(c.env.SHARED_STORAGE_DB);
+    const todos = await db.select().from(todosTable).all();
+
+    return c.jsonT({ todos });
+  })
   .post(
     "/",
     zValidator("form", z.object({ message: z.string() })),
@@ -20,12 +26,6 @@ route
       return c.jsonT({ message: "created!" });
     }
   )
-  .get(async (c) => {
-    const db = drizzle(c.env.SHARED_STORAGE_DB);
-    const todos = await db.select().from(todosTable).all();
-
-    return c.jsonT({ todos });
-  })
   .patch(
     "/:id",
     zValidator(
@@ -56,6 +56,7 @@ route
     }
   )
   .delete(
+    "/:id",
     zValidator("param", z.object({ id: z.string().pipe(z.coerce.number()) })),
     async (c) => {
       const id = c.req.valid("param").id;
@@ -68,5 +69,3 @@ route
       return c.text("");
     }
   );
-
-export default route;
