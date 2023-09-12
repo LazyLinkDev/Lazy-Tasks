@@ -27,14 +27,12 @@ import {
 import { Input } from "./ui/input";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "./ui/sheet";
-import { DialogClose } from "@radix-ui/react-dialog";
 
 const formSchema = z.object({
   message: z.string(),
@@ -81,7 +79,7 @@ const CreateSheet = ({
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -94,17 +92,15 @@ const CreateSheet = ({
         </SheetHeader>
         <TaskForm form={form} />
         <SheetFooter>
-          <SheetClose asChild>
-            <Button
-              onClick={async () => {
-                form.handleSubmit(onSubmit)();
-                if (form.formState.isValid) setIsOpen(false);
-              }}
-              type="submit"
-            >
-              Save changes
-            </Button>
-          </SheetClose>
+          <Button
+            onClick={async () => {
+              form.handleSubmit(onSubmit)();
+              if (form.formState.isValid) setIsOpen(false);
+            }}
+            type="submit"
+          >
+            Save changes
+          </Button>
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -118,7 +114,7 @@ const CreateDialog = ({
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
 }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -131,17 +127,15 @@ const CreateDialog = ({
         </DialogHeader>
         <TaskForm form={form} />
         <DialogFooter>
-          <DialogClose>
-            <Button
-              onClick={async () => {
-                form.handleSubmit(onSubmit)();
-                if (form.formState.isValid) setIsOpen(false);
-              }}
-              type="submit"
-            >
-              Save changes
-            </Button>
-          </DialogClose>
+          <Button
+            onClick={async () => {
+              form.handleSubmit(onSubmit)();
+              if (form.formState.isValid) setIsOpen(false);
+            }}
+            type="submit"
+          >
+            Save changes
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
