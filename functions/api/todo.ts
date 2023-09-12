@@ -9,14 +9,14 @@ import { Bindings } from "./[[route]]";
 const todo = new Hono<{ Bindings: Bindings }>();
 
 export const todoRoute = todo
-  .get("/", async (c) => {
+  .get("", async (c) => {
     const db = drizzle(c.env.SHARED_STORAGE_DB);
     const todos = await db.select().from(todosTable).all();
 
     return c.jsonT({ todos });
   })
   .post(
-    "/",
+    "",
     zValidator("form", z.object({ message: z.string() })),
     async (c) => {
       const todo = c.req.valid("form");

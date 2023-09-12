@@ -14,7 +14,7 @@ import { Checkbox } from "./ui/checkbox";
 import { Form } from "./ui/form";
 
 export type TaskType = InferResponseType<
-  typeof client.api.todo.index.$get
+  typeof client.api.todo.$get
 >["todos"][number];
 
 const $edit = hc<AppType>("/").api.todo[":id"].$patch;

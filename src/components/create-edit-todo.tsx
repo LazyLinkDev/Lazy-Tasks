@@ -163,7 +163,7 @@ const CreateEditToDo = ({ todo }: { todo?: TaskType }) => {
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
 
-  const $post = client.api.todo.index.$post;
+  const $post = client.api.todo.$post;
 
   const mutation = useMutation<
     InferResponseType<typeof $post>,

@@ -25,7 +25,7 @@ const Todos = () => {
   const query = useQuery({
     queryKey: ["todos"],
     queryFn: async () => {
-      const res = await client.api.todo.index.$get();
+      const res = await client.api.todo.$get();
       return await res.json();
     },
   });
