@@ -1,14 +1,16 @@
 import {
-  useQuery,
-  useMutation,
   QueryClient,
   QueryClientProvider,
+  useQuery,
 } from "@tanstack/react-query";
+import { hc } from "hono/client";
 import { AppType } from "../functions/api/[[route]]";
-import { hc, InferResponseType, InferRequestType } from "hono/client";
+import { ModeToggle } from "./components/mode-toggle";
+import { ThemeProvider } from "./components/theme-provider";
+import CreateToDo from "./components/create-todo";
 
 const queryClient = new QueryClient();
-const client = hc<AppType>("/");
+export const client = hc<AppType>("/");
 
 export default function App() {
   return (
@@ -27,47 +29,24 @@ const Todos = () => {
     },
   });
 
-  const $post = client.api.todo.$post;
-
-  const mutation = useMutation<
-    InferResponseType<typeof $post>,
-    Error,
-    InferRequestType<typeof $post>["form"]
-  >(
-    async (todo) => {
-      const res = await $post({
-        form: todo,
-      });
-      return await res.json();
-    },
-    {
-      onSuccess: async () => {
-        queryClient.invalidateQueries({ queryKey: ["todos"] });
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-    }
-  );
-
   return (
-    <div>
-      <button
-        onClick={() => {
-          mutation.mutate({
-            id: Date.now().toString(),
-            title: "Write code",
-          });
-        }}
-      >
-        Add Todo
-      </button>
-
-      <ul>
-        {query.data?.todos.map((todo) => (
-          <li key={todo.id}>{todo.message}</li>
-        ))}
-      </ul>
-    </div>
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <main className="px-8 h-screen flex flex-col max-w-lg mx-auto pt-2 lg:pt-10">
+        <div className="flex flex-row justify-center w-full py-4 ">
+          <h1 className="text-2xl mx-auto">Tasks</h1>
+          <div className="justify-self-end">
+            <ModeToggle />
+          </div>
+        </div>
+        <div className="flex flex-col items-center">
+          <CreateToDo />
+          <ul>
+            {query.data?.todos.map((todo) => (
+              <li key={todo.id}>{todo.message}</li>
+            ))}
+          </ul>
+        </div>
+      </main>
+    </ThemeProvider>
   );
 };
