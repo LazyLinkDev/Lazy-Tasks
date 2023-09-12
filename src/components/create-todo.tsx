@@ -95,7 +95,7 @@ const CreateSheet = ({
           <Button
             onClick={async () => {
               form.handleSubmit(onSubmit)();
-              if (form.formState.isValid) setIsOpen(false);
+              setIsOpen(false);
             }}
             type="submit"
           >
@@ -130,7 +130,7 @@ const CreateDialog = ({
           <Button
             onClick={async () => {
               form.handleSubmit(onSubmit)();
-              if (form.formState.isValid) setIsOpen(false);
+              setIsOpen(false);
             }}
             type="submit"
           >

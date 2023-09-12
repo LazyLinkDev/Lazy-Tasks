@@ -61,6 +61,20 @@ const route = app
 
       return c.jsonT(updated);
     }
+  )
+  .delete(
+    "/todo/:id",
+    zValidator("param", z.object({ id: z.string().pipe(z.coerce.number()) })),
+    async (c) => {
+      const id = c.req.valid("param").id;
+      const db = drizzle(c.env.SHARED_STORAGE_DB);
+
+      await db.delete(todosTable).where(eq(todosTable.id, id));
+
+      c.status(201);
+
+      return c.text("");
+    }
   );
 
 export type AppType = typeof route;

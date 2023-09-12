@@ -41,7 +41,7 @@ const Todos = () => {
         </div>
         <div className="flex flex-col items-center">
           <CreateToDo />
-          <ul>
+          <ul className="w-full">
             {query.data?.todos.map((todo) => (
               <Task key={todo.id} task={todo} />
             ))}
