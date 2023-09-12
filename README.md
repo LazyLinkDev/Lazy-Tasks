@@ -4,12 +4,11 @@ This is a website made just to test the capabilities of Clouflare services. At t
 
 ## Features
 
-- Add a task (fixed text)
+- Add a task
 - Get the list of tasks
 
 ## To-Do
 
-1. Be able to set the task text
 1. Change task status
 1. Edit task
 1. Delete task
