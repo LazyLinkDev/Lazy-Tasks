@@ -35,11 +35,12 @@ const route = app
     return c.jsonT({ todos });
   })
   .patch(
-    "/todo/:id/status",
+    "/todo/:id",
     zValidator(
       "form",
       z.object({
         status: z.string().pipe(z.coerce.number()),
+        message: z.string(),
       })
     ),
     zValidator(
@@ -55,7 +56,7 @@ const route = app
 
       const updated = await db
         .update(todosTable)
-        .set({ status: form.status === 1 })
+        .set({ status: form.status === 1, message: form.message })
         .where(eq(todosTable.id, id))
         .returning();
 

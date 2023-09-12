@@ -7,7 +7,7 @@ import { hc } from "hono/client";
 import { AppType } from "../functions/api/[[route]]";
 import { ModeToggle } from "./components/mode-toggle";
 import { ThemeProvider } from "./components/theme-provider";
-import CreateToDo from "./components/create-todo";
+import CreateEditToDo from "./components/create-edit-todo";
 import Task from "./components/task";
 
 const queryClient = new QueryClient();
@@ -40,7 +40,7 @@ const Todos = () => {
           </div>
         </div>
         <div className="flex flex-col items-center">
-          <CreateToDo />
+          <CreateEditToDo />
           <ul className="w-full">
             {query.data?.todos.map((todo) => (
               <Task key={todo.id} task={todo} />

@@ -2,11 +2,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { InferRequestType, InferResponseType } from "hono/client";
 import { BadgePlus } from "lucide-react";
-import { forwardRef, useState } from "react";
+import { Dispatch, SetStateAction, forwardRef, useState } from "react";
 import { useForm, type UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { client } from "../App";
 import useIsMobile from "../hooks/use-is-mobile";
+import { type TaskType } from "./task";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -34,14 +35,15 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 
-const formSchema = z.object({
-  message: z.string(),
+export const formSchema = z.object({
+  message: z.string().min(1, "A task title is required"),
+  status: z.boolean().default(false),
 });
 
 const AddButton = forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentPropsWithoutRef<typeof Button>
->((props, ref) => (
+>(({ ...props }, ref) => (
   <Button ref={ref} {...props} className="w-4/5 mx-auto mb-4">
     <BadgePlus className="mr-2 h-4 w-4" />
     Add Todo
@@ -64,7 +66,7 @@ const TaskForm = ({
             <FormControl>
               <Input className="col-span-3" {...field} />
             </FormControl>
-            <FormMessage />
+            <FormMessage className="col-span-4" />
           </FormItem>
         </div>
       )}
@@ -72,20 +74,26 @@ const TaskForm = ({
   </>
 );
 
-const CreateSheet = ({
+export const CreateSheet = ({
   form,
   onSubmit,
+  isOpen,
+  setIsOpen,
+  isEdit = false,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  isEdit?: boolean;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        <AddButton />
-      </SheetTrigger>
+      {!isEdit && (
+        <SheetTrigger asChild>
+          <AddButton />
+        </SheetTrigger>
+      )}
       <SheetContent side="bottom">
         <SheetHeader>
           <SheetTitle>New Task</SheetTitle>
@@ -95,7 +103,8 @@ const CreateSheet = ({
           <Button
             onClick={async () => {
               form.handleSubmit(onSubmit)();
-              setIsOpen(false);
+              if (!form.formState.isDirty && form.formState.isValid)
+                setIsOpen(false);
             }}
             type="submit"
           >
@@ -107,20 +116,26 @@ const CreateSheet = ({
   );
 };
 
-const CreateDialog = ({
+export const CreateDialog = ({
   form,
   onSubmit,
+  isOpen,
+  setIsOpen,
+  isEdit = false,
 }: {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
+  isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
+  isEdit?: boolean;
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <AddButton />
-      </DialogTrigger>
+      {!isEdit && (
+        <DialogTrigger asChild>
+          <AddButton />
+        </DialogTrigger>
+      )}
       <DialogContent>
         <DialogHeader>
           <DialogTitle>New Task</DialogTitle>
@@ -130,7 +145,8 @@ const CreateDialog = ({
           <Button
             onClick={async () => {
               form.handleSubmit(onSubmit)();
-              setIsOpen(false);
+              if (!form.formState.isDirty && form.formState.isValid)
+                setIsOpen(false);
             }}
             type="submit"
           >
@@ -142,9 +158,10 @@ const CreateDialog = ({
   );
 };
 
-const CreateToDo = () => {
+const CreateEditToDo = ({ todo }: { todo?: TaskType }) => {
   const isMobile = useIsMobile();
   const queryClient = useQueryClient();
+  const [isOpen, setIsOpen] = useState(false);
 
   const $post = client.api.todo.$post;
 
@@ -169,11 +186,12 @@ const CreateToDo = () => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: { message: "" },
+    defaultValues: { message: todo?.message ?? "" },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     mutation.mutate(values);
+
     form.reset();
   }
 
@@ -184,13 +202,23 @@ const CreateToDo = () => {
         className="space-y-8 w-full flex "
       >
         {isMobile ? (
-          <CreateSheet form={form} onSubmit={onSubmit} />
+          <CreateSheet
+            form={form}
+            onSubmit={onSubmit}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
         ) : (
-          <CreateDialog form={form} onSubmit={onSubmit} />
+          <CreateDialog
+            form={form}
+            onSubmit={onSubmit}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
         )}
       </form>
     </Form>
   );
 };
 
-export default CreateToDo;
+export default CreateEditToDo;

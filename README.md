@@ -4,14 +4,10 @@ This is a website made just to test the capabilities of Clouflare services. At t
 
 ## Features
 
-- Add a task
-- Get the list of tasks
-- Change task status
+- Manage tasks
 
 ## To-Do
 
-1. Edit task
-1. Delete task
 1. Auth (no external services)
 1. Tasks owned by user
 1. Lists
