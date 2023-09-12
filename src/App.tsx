@@ -8,6 +8,7 @@ import { AppType } from "../functions/api/[[route]]";
 import { ModeToggle } from "./components/mode-toggle";
 import { ThemeProvider } from "./components/theme-provider";
 import CreateToDo from "./components/create-todo";
+import Task from "./components/task";
 
 const queryClient = new QueryClient();
 export const client = hc<AppType>("/");
@@ -42,7 +43,7 @@ const Todos = () => {
           <CreateToDo />
           <ul>
             {query.data?.todos.map((todo) => (
-              <li key={todo.id}>{todo.message}</li>
+              <Task key={todo.id} task={todo} />
             ))}
           </ul>
         </div>

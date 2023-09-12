@@ -6,10 +6,10 @@ This is a website made just to test the capabilities of Clouflare services. At t
 
 - Add a task
 - Get the list of tasks
+- Change task status
 
 ## To-Do
 
-1. Change task status
 1. Edit task
 1. Delete task
 1. Auth (no external services)
