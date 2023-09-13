@@ -48,7 +48,7 @@ export const authRouter = route.post(
 
       return c.jsonT(user);
     } catch (error) {
-      return c.text("User already exist", 400);
+      return c.text("Invalid Username or Password!", 400);
     }
   }
 );

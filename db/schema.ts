@@ -10,7 +10,7 @@ export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),
   name: text("name"),
   email: text("email").unique().notNull(),
-  isEmailVerified: integer("is_email_verigfied", { mode: "boolean" }).default(
+  isEmailVerified: integer("is_email_verified", { mode: "boolean" }).default(
     false
   ),
   passwordHash: text("password").notNull(),

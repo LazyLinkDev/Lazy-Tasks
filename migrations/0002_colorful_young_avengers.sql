@@ -1,0 +1,1 @@
+ALTER TABLE `users` RENAME COLUMN `is_email_verigfied` TO `is_email_verified`;
