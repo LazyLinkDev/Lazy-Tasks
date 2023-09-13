@@ -6,6 +6,9 @@ export const todos = sqliteTable("todos", {
   status: integer("status", { mode: "boolean" }).default(false),
 });
 
+export type Todo = typeof todos.$inferSelect;
+export type NewTodo = typeof todos.$inferInsert;
+
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),
   name: text("name"),
@@ -15,3 +18,6 @@ export const users = sqliteTable("users", {
   ),
   passwordHash: text("password").notNull(),
 });
+
+export type User = typeof users.$inferSelect;
+export type NewUser = typeof users.$inferInsert;

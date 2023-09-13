@@ -32,6 +32,9 @@ dependencies:
   '@tanstack/react-query':
     specifier: ^4.35.0
     version: 4.35.0(react-dom@18.2.0)(react@18.2.0)
+  '@tsndr/cloudflare-worker-jwt':
+    specifier: ^2.2.2
+    version: 2.2.2
   bcryptjs:
     specifier: ^2.4.3
     version: 2.4.3
@@ -41,6 +44,9 @@ dependencies:
   clsx:
     specifier: ^2.0.0
     version: 2.0.0
+  date-fns:
+    specifier: ^2.30.0
+    version: 2.30.0
   drizzle-orm:
     specifier: ^0.28.6
     version: 0.28.6(@cloudflare/workers-types@4.20230904.0)(@types/better-sqlite3@7.6.4)(better-sqlite3@8.6.0)
@@ -1605,6 +1611,10 @@ packages:
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
+  /@tsndr/cloudflare-worker-jwt@2.2.2:
+    resolution: {integrity: sha512-l+UFCSrJYwFQpszz4hHKYi5q8EI+r00LEi9UgQtf7+7/RlRg59kE5m4gjHkWRANDDAAhAd6DsnwanlABI8LJzQ==}
+    dev: false
+
   /@types/bcryptjs@2.4.3:
     resolution: {integrity: sha512-XTnH9E/rp51aKGsiMtQCHV/owDLW2E9QAxI7ItpWWm6Gi6XO1e4o3VuEYDma0lbitj1vNOBj05Qk8l2BYoiN4A==}
     dev: true
@@ -2131,6 +2141,13 @@ packages:
   /data-uri-to-buffer@2.0.2:
     resolution: {integrity: sha512-ND9qDTLc6diwj+Xe5cdAgVTbLVdXbtxTJRXRhli8Mowuaan+0EJOtdqJ0QCHNSSPyoXGx9HX2/VMnKeC34AChA==}
     dev: true
+
+  /date-fns@2.30.0:
+    resolution: {integrity: sha512-fnULvOpxnC5/Vg3NCiWelDsLiUc9bRwAPs/+LfTLNvetFCtCTN+yQz15C/fs4AwX1R9K5GLtLfn8QW+dWisaAw==}
+    engines: {node: '>=0.11'}
+    dependencies:
+      '@babel/runtime': 7.22.15
+    dev: false
 
   /debug@4.3.4:
     resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}

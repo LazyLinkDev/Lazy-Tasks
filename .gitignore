@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 .wrangler
-.wrangler.toml
+wrangler.toml

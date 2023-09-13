@@ -1,10 +1,11 @@
-import { Hono } from "hono";
-import { Bindings } from "./[[route]]";
 import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { drizzle } from "drizzle-orm/d1";
+import { Hono } from "hono";
+import { z } from "zod";
 import { users } from "../../db/schema";
+import { generateUserTokens } from "../token";
+import { Bindings } from "./[[route]]";
 
 const route = new Hono<{ Bindings: Bindings }>();
 const SALT_MAGNITUDE = 10;
@@ -41,12 +42,20 @@ export const authRouter = route.post(
     const db = drizzle(c.env.SHARED_STORAGE_DB);
 
     try {
-      const user = await db
-        .insert(users)
-        .values({ email: c.req.valid("form").email, passwordHash })
-        .returning();
+      const user = (
+        await db
+          .insert(users)
+          .values({ email: c.req.valid("form").email, passwordHash })
+          .returning()
+      )[0];
 
-      return c.jsonT(user);
+      const tokens = await generateUserTokens(user, {
+        accessExpirationMinutes: c.env.JWT_ACCESS_EXPIRATION_MINUTES,
+        refreshExpirationDays: c.env.JWT_REFRESH_EXPIRATION_DAYS,
+        secret: c.env.JWT_SECRET,
+      });
+
+      return c.jsonT(tokens);
     } catch (error) {
       return c.text("Invalid Username or Password!", 400);
     }
