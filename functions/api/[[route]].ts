@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { handle } from "hono/cloudflare-pages";
 import { logger } from "hono/logger";
 import { todoRoute } from "./todo";
+import { authRouter } from "./auth";
 
 export type Bindings = {
   SHARED_STORAGE_DB: D1Database;
@@ -11,7 +12,10 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use("*", logger());
 
-const route = app.basePath("/api").route("/todo", todoRoute);
+const route = app
+  .basePath("/api")
+  .route("/todo", todoRoute)
+  .route("/auth", authRouter);
 
 export type AppType = typeof route;
 

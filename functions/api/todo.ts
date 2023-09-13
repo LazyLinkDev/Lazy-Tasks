@@ -6,9 +6,9 @@ import { z } from "zod";
 import { todos as todosTable } from "../../db/schema";
 import { Bindings } from "./[[route]]";
 
-const todo = new Hono<{ Bindings: Bindings }>();
+const route = new Hono<{ Bindings: Bindings }>();
 
-export const todoRoute = todo
+export const todoRoute = route
   .get("", async (c) => {
     const db = drizzle(c.env.SHARED_STORAGE_DB);
     const todos = await db.select().from(todosTable).all();
