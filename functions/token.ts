@@ -71,3 +71,20 @@ export const generateUserTokens = async (
     },
   };
 };
+
+export const verifyToken = async (
+  token: string,
+  type: TokenType,
+  secret: string
+) => {
+  const isValid = await jwt.verify(token, secret);
+  if (!isValid) {
+    throw new Error("Token not valid");
+  }
+  const decoded = jwt.decode(token);
+  const payload = decoded.payload;
+  if (type !== payload.type) {
+    throw new Error("Token not valid");
+  }
+  return payload;
+};
