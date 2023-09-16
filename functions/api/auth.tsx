@@ -174,11 +174,10 @@ export const authRouter = route
           user.isEmailVerified
         );
 
+        const link = `${c.env.CF_PAGES_URL}reset-password?token=${resetPasswordToken}`;
+
         const component = (
-          <ResetPassword
-            name={user.name || user.email}
-            link={`${c.env.CF_PAGES_URL}reset-password?token=${resetPasswordToken}`}
-          />
+          <ResetPassword name={user.name || user.email} link={link} />
         );
 
         await fetch("https://api.resend.com/emails", {
@@ -192,7 +191,9 @@ export const authRouter = route
             to: [user.email],
             subject: "Reset your password",
             html: render(component),
-            text: render(component, { plainText: true }),
+            text: `Hello ${user.name}, we received a requested for a password change for your Tasks account. If this was you, you can set a new password here: ${link}}
+            
+            If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.`,
           }),
         });
       }
