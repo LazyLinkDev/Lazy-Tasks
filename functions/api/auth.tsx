@@ -191,7 +191,9 @@ export const authRouter = route
             to: [user.email],
             subject: "Reset your password",
             html: render(component),
-            text: `Hello ${user.name}, we received a requested for a password change for your Tasks account. If this was you, you can set a new password here: ${link}}
+            text: `Hello ${
+              user.name || user.email
+            }, we received a requested for a password change for your Tasks account. If this was you, you can set a new password here: ${link}}
             
             If you were not expecting this invitation, you can ignore this email. If you are concerned about your account's safety, please reply to this email to get in touch with us.`,
           }),
