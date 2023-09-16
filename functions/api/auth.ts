@@ -5,8 +5,15 @@ import { drizzle } from "drizzle-orm/d1";
 import { Hono } from "hono";
 import { z } from "zod";
 import { users } from "../../db/schema";
-import { generateUserTokens, tokenTypes, verifyToken } from "../token";
+import {
+  generateToken,
+  generateUserTokens,
+  tokenTypes,
+  verifyToken,
+} from "../token";
+import { getUserbyEmail } from "../user";
 import { Bindings } from "./[[route]]";
+import { add } from "date-fns";
 
 const route = new Hono<{ Bindings: Bindings }>();
 const SALT_MAGNITUDE = 10;
@@ -83,12 +90,7 @@ export const authRouter = route
       const db = drizzle(c.env.SHARED_STORAGE_DB);
 
       try {
-        const user = (
-          await db
-            .select()
-            .from(users)
-            .where(eq(users.email, c.req.valid("form").email))
-        )[0];
+        const user = await getUserbyEmail(db, c.req.valid("form").email);
 
         if (
           !user ||
@@ -148,5 +150,50 @@ export const authRouter = route
       });
 
       return c.jsonT({ tokens });
+    }
+  )
+  .post(
+    "/forgot-password",
+    zValidator("form", z.object({ email: z.string().email() })),
+    async (c) => {
+      const db = drizzle(c.env.SHARED_STORAGE_DB);
+      const user = await getUserbyEmail(db, c.req.valid("form").email);
+
+      if (user) {
+        const expires = add(new Date(), {
+          minutes: c.env.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
+        });
+
+        const resetPasswordToken = await generateToken(
+          user.id,
+          tokenTypes.RESET_PASSWORD,
+          expires,
+          c.env.JWT_SECRET,
+          user.isEmailVerified
+        );
+
+        const result = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${c.env.RESEND_API_KEY}`,
+          },
+          body: JSON.stringify({
+            from: "David Figueroa <info@dmfigueroa.com>",
+            to: [user.email],
+            subject: "Reset your password",
+            html: `
+            Hello ${user.name}
+            Please reset your password by clicking the following link:
+            ${resetPasswordToken}
+          `,
+          }),
+        });
+      }
+
+      return c.text(
+        "If that email address is in our database, we will send you an email to reset your password.",
+        200
+      );
     }
   );
