@@ -14,6 +14,8 @@ import {
 import { getUserbyEmail } from "../user";
 import { Bindings } from "./[[route]]";
 import { add } from "date-fns";
+import { render } from "@react-email/components";
+import ResetPassword from "../../emails";
 
 const route = new Hono<{ Bindings: Bindings }>();
 const SALT_MAGNITUDE = 10;
@@ -172,7 +174,14 @@ export const authRouter = route
           user.isEmailVerified
         );
 
-        const result = await fetch("https://api.resend.com/emails", {
+        const component = (
+          <ResetPassword
+            name={user.name || user.email}
+            link={`${c.env.CF_PAGES_URL}reset-password?token=${resetPasswordToken}`}
+          />
+        );
+
+        await fetch("https://api.resend.com/emails", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -182,11 +191,8 @@ export const authRouter = route
             from: "David Figueroa <info@dmfigueroa.com>",
             to: [user.email],
             subject: "Reset your password",
-            html: `
-            Hello ${user.name}
-            Please reset your password by clicking the following link:
-            ${resetPasswordToken}
-          `,
+            html: render(component),
+            text: render(component, { plainText: true }),
           }),
         });
       }

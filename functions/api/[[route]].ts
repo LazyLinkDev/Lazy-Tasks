@@ -11,6 +11,7 @@ export type Bindings = {
   JWT_RESET_PASSWORD_EXPIRATION_MINUTES: number;
   JWT_SECRET: string;
   RESEND_API_KEY: string;
+  CF_PAGES_URL: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();

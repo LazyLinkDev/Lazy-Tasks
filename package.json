@@ -9,7 +9,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "generate-migrations": "drizzle-kit generate:sqlite --out migrations --schema db/schema.ts",
-    "migrate:local": "node db/migrate.js"
+    "migrate:local": "node db/migrate.js",
+    "dev:email": "email dev"
   },
   "dependencies": {
     "@hono/zod-validator": "^0.1.8",
@@ -20,6 +21,7 @@
     "@radix-ui/react-icons": "^1.3.0",
     "@radix-ui/react-label": "^2.0.2",
     "@radix-ui/react-slot": "^1.0.2",
+    "@react-email/components": "0.0.7",
     "@tanstack/react-query": "^4.35.0",
     "@tsndr/cloudflare-worker-jwt": "^2.2.2",
     "bcryptjs": "^2.4.3",
@@ -32,6 +34,7 @@
     "lucide-react": "^0.276.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-email": "1.9.4",
     "react-hook-form": "^7.46.1",
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
