@@ -174,7 +174,7 @@ export const authRouter = route
           user.isEmailVerified
         );
 
-        const link = `${c.env.CF_PAGES_URL}reset-password?token=${resetPasswordToken}`;
+        const link = `${c.env.CF_PAGES_URL}/reset-password?token=${resetPasswordToken}`;
 
         const component = (
           <ResetPassword name={user.name || user.email} link={link} />
