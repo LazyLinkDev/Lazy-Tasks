@@ -66,6 +66,6 @@ export const todoRoute = route
 
       c.status(201);
 
-      return c.text("");
+      return c.newResponse(null);
     }
   );
